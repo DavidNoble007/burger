@@ -1,0 +1,56 @@
+<h1>Burger Logger!</h1>
+
+<h2>Eat a burger</h2>
+
+<ul>
+  {{#each burgers}}
+  {{#unless devoured}}
+  <h1>{{burger_name}}</h1><button id= "devour" name = {{id}}>Eat Me!</button>
+   {{else}}
+   <h1>{{burger_name}}</h1>
+   {{/unless}}
+  {{/each}}
+</ul>
+
+<div>
+  <p>Add a Burger!</p>
+<input id= "burgerinput"></input>
+<button id= "save">Save</button>
+</div>
+<script>
+  $("#save").click(function(event){
+event.preventDefault();
+console.log("Clicked!")
+  
+$("#burgerinput").val()
+console.log($("#burgerinput").val())
+
+var burgerobject= {
+burger_name: $("#burgerinput").val(),
+}
+ $.ajax({
+
+        'url' : "/api/burgers",
+        'type' : "POST",
+        'data' : burgerobject
+
+  }).then(function(data){
+console.log("this is what we got back", data)
+location.reload();
+  })
+  });
+
+  $(document).on("click","#devour", function (event){
+console.log("eaten", $(this).attr("name"))
+
+$.ajax({
+        'url' : "/api/burgers/" + $(this).attr("name"),
+        'type' : "PUT",      
+  }).then(function(data){
+console.log("this is what we got back", data)
+
+  })
+  });
+
+
+</script>
