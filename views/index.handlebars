@@ -5,10 +5,24 @@
 <ul>
   {{#each burgers}}
   {{#unless devoured}}
-  <h1>{{burger_name}}</h1><button id= "devour" name = {{id}}>Eat Me!</button>
-   {{else}}
-   <h1>{{burger_name}}</h1>
+  <li>
+    {{burger_name}}
+    <button class= "devour" name = {{id}} devoured-status="{{devoured}}">
+      {{#if devoured}}Eat the burger!{{else}}MAke me another!{{/if}}</button>
+
    {{/unless}}
+  {{/each}}
+</ul>
+<h2>Already Eaten</h2>
+<ul>
+  {{#each burgers}}
+  {{#if devoured}}
+  <li>
+    {{burger_name}}
+    <button class= "devour" name = {{id}} devoured-status="{{devoured}}">
+      {{#if devoured}}Eat the burger!{{else}}MAke me another!{{/if}}</button>
+
+   {{/if}}
   {{/each}}
 </ul>
 
@@ -40,15 +54,21 @@ location.reload();
   })
   });
 
-  $(document).on("click","#devour", function (event){
-console.log("eaten", $(this).attr("name"))
+  $(document).on("click",".devour", function (event){
+    var id = $(this).data("name");
+    var devouredStatus = $(this).data("devoured-status");
+    
+    var newDevouredStatus = {
+      devoured: devouredStatus
+    };
 
 $.ajax({
-        'url' : "/api/burgers/" + $(this).attr("name"),
-        'type' : "PUT",      
-  }).then(function(data){
-console.log("this is what we got back", data)
-
+        'url' : "/api/burgers/" + id,
+        'type' : "PUT",
+        data:newDevouredStatus
+  }).then(function(){
+    console.log("changed devoured to", devouredStatus);
+    location.reload();
   })
   });
 
